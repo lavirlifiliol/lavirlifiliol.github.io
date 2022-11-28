@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Find where the radians lie on the unit circle</title>
+        <style>
+            .target {
+                r: 6;
+                fill: red;
+            }
+            .target:hover {
+                r: 8;
+                fill: blue;
+            }
+        </style>
+    </head>
+    <body>
+        <svg width="500" height="300">
+            <!-- the unit circle including axes -->
+            <circle cx="150" cy="150" r="100" stroke="black" stroke-width="1" fill="none" />
+            <line x1="50" y1="150" x2="250" y2="150" stroke="black" stroke-width="1"/>
+            <line x1="150" y1="50" x2="150" y2="250" stroke="black" stroke-width="1"/>
+            <circle cx="50" cy="150" class="target" id="1_1" />
+            <circle cx="250" cy="150" class="target" id="0_1" />
+            <circle cx="150" cy="250" class="target" id="3_2"/>
+            <circle cx="150" cy="50" class="target" id="1_2"/>
+
+            <circle cx="221" cy="221" class="target" id="7_4"/>
+            <circle cx="79" cy="221" class="target" id="5_4" />
+            <circle cx="221" cy="79" class="target" id="1_4" />
+            <circle cx="79" cy="79" class="target" id="3_4" />
+
+            <circle cx="200" cy="237" class="target" id="5_3" />
+            <circle cx="100" cy="237" class="target" id="4_3"/>
+            <circle cx="200" cy="63" class="target" id="1_3"/>
+            <circle cx="100" cy="63" class="target" id="2_3" />
+
+            <circle cy="200" cx="237" class="target" id="11_6" />
+            <circle cy="100" cx="237" class="target" id="1_6" />
+            <circle cy="200" cx="63" class="target" id="7_6" />
+            <circle cy="100" cx="63" class="target" id="5_6" />
+
+            <text x="10" y="30" font-size="20" id="score" >Score: 0</text>
+            <text x="320" y="150" font-size="30" id="pi" >&pi;</text>
+            <text text-anchor="middle" x="309" y="143" font-size="30" class="frac" id="top" >1</text>
+            <text x="302" y="167" font-size="30" class="frac" id="bottom" >3</text>
+            <text x="302" y="150" font-size="30" id="nofrac" >3</text>
+            <line x1="300" y1="145" x2="318" y2="145" stroke-width=2 stroke="black" class="frac" />
+            <line x1="290" y1="145" x2="295" y2="145" stroke-width=2 stroke="black" id="neg" />
+        </svg>
+        <script defer>
+            "use strict";
+            let testIdx = 0
+            function pickrand(arr) {
+                return arr[Math.floor(Math.random() * arr.length)];
+            }
+            function updateScore() {
+                document.getElementById("score").innerHTML = "Score: " + score;
+            }
+            function updateQuestion() {
+                const [qn, qd] = question;
+                const shouldUseNegative = Math.random() < 0.5;
+                const nofrac = document.getElementById("nofrac");
+                const ePi = document.getElementById("pi");
+                const neg = document.getElementById("neg");
+                const frac = document.querySelectorAll(".frac");
+                if (qd === 1) {
+                    frac.forEach(e => e.style.visibility = "hidden");
+                    if (qn === 0) {
+                        nofrac.innerHTML = qn;
+                        nofrac.style.visibility = "visible";
+                        ePi.style.visibility = "hidden";
+                        neg.style.visibility = "hidden";
+                    } else if (shouldUseNegative) {
+                        nofrac.style.visibility = "visible";
+                        nofrac.innerHTML = "&pi;";
+                        ePi.style.visibility = "hidden";
+                        neg.style.visibility = "visible";
+                    } else {
+                        nofrac.style.visibility = "visible";
+                        nofrac.innerHTML = "&pi;";
+                        ePi.style.visibility = "hidden";
+                        neg.style.visibility = "hidden";
+                    }
+                } else {
+                    frac.forEach(e => e.style.visibility = "visible");
+                    nofrac.style.visibility = "hidden";
+                    pi.style.visibility = "visible";
+                    const top = document.getElementById("top");
+                    const bottom = document.getElementById("bottom");
+                    bottom.innerHTML = qd;
+                    if(shouldUseNegative) {
+                        top.innerHTML = 2 * qd - qn;
+                        neg.style.visibility = "visible";
+                    } else {
+                        top.innerHTML = qn;
+                        neg.style.visibility = "hidden";
+                    }
+                }
+            }
+            const targets = document.querySelectorAll(".target");
+            let score = 0;
+            let possible = [];
+            targets.forEach((it) => {
+                const id = it.id;
+                const [n, d] = id.split("_");
+                possible.push([+n, +d]);
+                it.addEventListener("click", (e) => {
+                    const [qn, qd] = question;
+                    if (qn === +n && qd === +d) {
+                        score++;
+                    } else {
+                        score = 0;
+                    }
+                    updateScore();
+                    question = pickrand(possible);
+                    updateQuestion();
+                });
+            });
+            let question = pickrand(possible);
+            updateQuestion();
+        </script>
+    </body>
+</html>
