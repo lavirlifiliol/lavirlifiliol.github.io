@@ -109,10 +109,10 @@
                     const [qn, qd] = question;
                     if (qn === +n && qd === +d) {
                         document.getElementById(qn+"_"+qd).style.fill = "red";
-                        revealed = true;
                         if(!revealed) {
                             score++;
                         }
+                        revealed = false;
                         updateScore();
                         question = pickrand(possible);
                         updateQuestion();
