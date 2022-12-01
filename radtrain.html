@@ -2,19 +2,19 @@
 <html>
     <head>
         <title>Find where the radians lie on the unit circle</title>
-        <style>
-            .target {
-                r: 6;
-                fill: red;
-            }
-            .target:hover {
-                r: 8;
-                fill: blue;
-            }
-        </style>
     </head>
     <body>
         <svg width="500" height="300">
+            <style>
+                .target {
+                    r: 6;
+                    fill: red;
+                }
+                .target:hover {
+                    r: 8;
+                    fill: blue;
+                }
+            </style>
             <!-- the unit circle including axes -->
             <circle cx="150" cy="150" r="100" stroke="black" stroke-width="1" fill="none" />
             <line x1="50" y1="150" x2="250" y2="150" stroke="black" stroke-width="1"/>
@@ -100,6 +100,7 @@
             const targets = document.querySelectorAll(".target");
             let score = 0;
             let possible = [];
+            let revealed = false;
             targets.forEach((it) => {
                 const id = it.id;
                 const [n, d] = id.split("_");
@@ -107,13 +108,20 @@
                 it.addEventListener("click", (e) => {
                     const [qn, qd] = question;
                     if (qn === +n && qd === +d) {
-                        score++;
+                        document.getElementById(qn+"_"+qd).style.fill = "red";
+                        revealed = true;
+                        if(!revealed) {
+                            score++;
+                        }
+                        updateScore();
+                        question = pickrand(possible);
+                        updateQuestion();
                     } else {
+                        document.getElementById(qn+"_"+qd).style.fill = "green";
                         score = 0;
+                        updateScore();
+                        revealed = true;
                     }
-                    updateScore();
-                    question = pickrand(possible);
-                    updateQuestion();
                 });
             });
             let question = pickrand(possible);
